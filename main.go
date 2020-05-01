@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"net/url"
 	"os"
 	"strings"
 
@@ -79,7 +80,7 @@ func main() {
 
 	if action == "remove" {
 		for _, label := range labels {
-			_, err = client.Issues.RemoveLabelForIssue(ctx, owner, repo, number, label)
+			_, err = client.Issues.RemoveLabelForIssue(ctx, owner, repo, number, url.PathEscape(label))
 			if err != nil {
 				githubactions.Fatalf(err.Error())
 			}
