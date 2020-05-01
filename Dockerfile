@@ -16,7 +16,6 @@ RUN go build \
   -ldflags "-s -w -extldflags '-static'" \
   -installsuffix cgo \
   -tags netgo \
-  -mod vendor \
   -o /bin/app \
   . \
   && strip /bin/app \
