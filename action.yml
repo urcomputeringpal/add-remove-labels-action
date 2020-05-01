@@ -1,0 +1,20 @@
+name: Add / Remove Labels
+description: A GitHub Actions that adds/removes labels to/from Issues/PRs
+branding:
+  icon: 'bookmark'  
+  color: 'gray-dark'
+inputs:
+  GITHUB_TOKEN:
+    description: 'Github token for the repository'
+    required: true
+  action:
+    description: "'add' or 'remove'"
+    required: true
+  labels:
+    description: "A comma-separated list of labels"
+    required: true
+
+# TODO publish slim image
+runs:
+  using: docker
+  image: Dockerfile
