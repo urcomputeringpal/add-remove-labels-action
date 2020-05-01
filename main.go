@@ -20,20 +20,17 @@ func main() {
 	githubToken := githubactions.GetInput("GITHUB_TOKEN")
 	if githubToken == "" {
 		githubactions.Fatalf("missing 'githubToken'")
-		return
 	}
 
 	labelString := githubactions.GetInput("labels")
 	if labelString == "" {
 		githubactions.Fatalf("missing 'labels'")
-		return
 	}
 	labels := strings.Split(labelString, ",")
 
 	action := githubactions.GetInput("action")
 	if action == "" {
 		githubactions.Fatalf("missing 'action'")
-		return
 	}
 
 	// Setup GitHub client
@@ -47,8 +44,7 @@ func main() {
 	// Try to parse the event
 	event, err := ioutil.ReadFile(os.Getenv("GITHUB_EVENT_PATH"))
 	if err != nil {
-		log.Printf("Can't read events: " + err.Error())
-		return
+		githubactions.Fatalf("Can't read events: " + err.Error())
 	}
 
 	var owner string
@@ -61,7 +57,7 @@ func main() {
 		var issue github.IssuesEvent
 		err = json.Unmarshal(event, &issue)
 		if err != nil {
-			log.Fatalf("Can't unmarshal json: %s", err)
+			githubactions.Fatalf("Can't unmarshal json: %s", err)
 		}
 
 		owner = *issue.Repo.Owner.Login
@@ -71,7 +67,7 @@ func main() {
 		var pr github.PullRequestEvent
 		err = json.Unmarshal(event, &pr)
 		if err != nil {
-			log.Fatalf("Can't unmarshal json: %s", err)
+			githubactions.Fatalf("Can't unmarshal json: %s", err)
 		}
 
 		owner = *pr.Repo.Owner.Login
@@ -85,15 +81,15 @@ func main() {
 		for _, label := range labels {
 			_, err = client.Issues.RemoveLabelForIssue(ctx, owner, repo, number, label)
 			if err != nil {
-				log.Printf(err.Error())
-				return
+				githubactions.Fatalf(err.Error())
 			}
 		}
 	} else {
 		_, _, err = client.Issues.AddLabelsToIssue(ctx, owner, repo, number, labels)
 		if err != nil {
-			log.Printf(err.Error())
-			return
+			githubactions.Fatalf(err.Error())
 		}
 	}
+
+	log.Printf("done!")
 }
